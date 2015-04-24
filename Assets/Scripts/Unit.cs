@@ -7,7 +7,7 @@ public class Unit : MonoBehaviour {
 	public int tileY;
 	public TileMap map;
 
-	public List<TileMap.Node> currentPath = null;
+	public List<Node> currentPath = null;
 
 	void Update ()
 	{
