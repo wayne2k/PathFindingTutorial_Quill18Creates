@@ -58,6 +58,12 @@ public class TileMap : MonoBehaviour {
 		tiles[8, 6] = 2;
 		
 	}
+
+	float CostToEnterTile (int x, int y)
+	{
+		TileType tt = tileTypes[tiles[x, y]];
+		return tt.movementCost;
+	}
 	
 	void GeneratePathfindingGraph() 
 	{
@@ -162,7 +168,8 @@ public class TileMap : MonoBehaviour {
 			unvisited.Remove(u);
 			
 			foreach(Node v in u.neighbours) {
-				float alt = dist[u] + u.DistanceTo(v);
+//				float alt = dist[u] + u.DistanceTo(v);
+				float alt = dist[u] + CostToEnterTile (v.x, v.y);
 				if( alt < dist[v] ) {
 					dist[v] = alt;
 					prev[v] = u;

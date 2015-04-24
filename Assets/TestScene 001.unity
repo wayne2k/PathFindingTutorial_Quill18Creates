@@ -286,6 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileX: 0
   tileY: 0
+  map: {fileID: 0}
 --- !u!1 &1600911942
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,10 +318,13 @@ MonoBehaviour:
   tileTypes:
   - name: Grassland
     tileVisualPrefab: {fileID: 150156, guid: 62763b4a2404bf74b80690e4f58ba483, type: 2}
+    movementCost: 1
   - name: Swamp
     tileVisualPrefab: {fileID: 131404, guid: 44657f40d3bae144cbe45074d94122ee, type: 2}
+    movementCost: 2
   - name: Mountian
     tileVisualPrefab: {fileID: 103532, guid: 042712ea3bc8a0f41933f928bd9b5023, type: 2}
+    movementCost: 2154154
 --- !u!4 &1600911944
 Transform:
   m_ObjectHideFlags: 0
