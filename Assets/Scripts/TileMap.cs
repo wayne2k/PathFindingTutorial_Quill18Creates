@@ -59,10 +59,17 @@ public class TileMap : MonoBehaviour {
 		
 	}
 
-	float CostToEnterTile (int x, int y)
+	float CostToEnterTile (int sourceX, int sourceY, int targetX, int targetY)
 	{
-		TileType tt = tileTypes[tiles[x, y]];
-		return tt.movementCost;
+		TileType tt = tileTypes[tiles[targetX, targetY]];
+		float cost = tt.movementCost;
+
+		if (sourceX != targetX && sourceY != targetY) {
+			// we are moving diagonaly Fudge the cost for tie breaking
+			cost += 0.001f;
+		}
+
+		return cost;
 	}
 	
 	void GeneratePathfindingGraph() 
@@ -82,17 +89,39 @@ public class TileMap : MonoBehaviour {
 		//Now that all the nodes exist, calculate their neighbours.
 		for(int x=0; x < mapSizeX; x++) {
 			for(int y=0; y < mapSizeY; y++) {
-				// We have a 4-way connected map
-				// This also works with 6-way hexes and 8-way tiles and n-way variable areas (like EU4)
-				
-				if(x > 0)
+
+				// 4-way connected version
+//				if(x > 0)
+//					graph[x,y].neighbours.Add( graph[x-1, y] );
+//				if(x < mapSizeX-1)
+//					graph[x,y].neighbours.Add( graph[x+1, y] );
+//				if(y > 0)
+//					graph[x,y].neighbours.Add( graph[x, y-1] );
+//				if(y < mapSizeY-1)
+//					graph[x,y].neighbours.Add( graph[x, y+1] );
+
+
+				// 8-way connected version. Allows diagonal movement.
+				if(x > 0) {
 					graph[x,y].neighbours.Add( graph[x-1, y] );
-				if(x < mapSizeX-1)
+					if(y > 0)
+						graph[x,y].neighbours.Add( graph[x-1, y-1] );
+					if(y < mapSizeY-1)
+						graph[x,y].neighbours.Add( graph[x-1, y+1] );
+				}
+				if(x < mapSizeX-1) {
 					graph[x,y].neighbours.Add( graph[x+1, y] );
+					if(y > 0)
+						graph[x,y].neighbours.Add( graph[x+1, y-1] );
+					if(y < mapSizeY-1)
+						graph[x,y].neighbours.Add( graph[x+1, y+1] );
+				}
 				if(y > 0)
 					graph[x,y].neighbours.Add( graph[x, y-1] );
 				if(y < mapSizeY-1)
 					graph[x,y].neighbours.Add( graph[x, y+1] );
+
+				// This also works with 6-way hexes and n-way variable areas (like EU4)
 			}
 		}
 	}
@@ -169,7 +198,7 @@ public class TileMap : MonoBehaviour {
 			
 			foreach(Node v in u.neighbours) {
 //				float alt = dist[u] + u.DistanceTo(v);
-				float alt = dist[u] + CostToEnterTile (v.x, v.y);
+				float alt = dist[u] + CostToEnterTile (u.x, u.y, v.x, v.y);
 				if( alt < dist[v] ) {
 					dist[v] = alt;
 					prev[v] = u;
