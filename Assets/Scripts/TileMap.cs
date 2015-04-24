@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TileMap : MonoBehaviour {
-
+public class TileMap : MonoBehaviour 
+{
+	public GameObject selectedUnit;
 	public TileType[] tileTypes;
 
 	int[,] tiles;
@@ -55,8 +56,23 @@ public class TileMap : MonoBehaviour {
 			for(int y=0; y < mapSizeX; y++) 
 			{
 				TileType tt = tileTypes[ tiles[x,y] ];
-				Instantiate( tt.tileVisualPrefab, new Vector3(x, y, 0), Quaternion.identity );
+				GameObject go = (GameObject)Instantiate( tt.tileVisualPrefab, new Vector3(x, y, 0), Quaternion.identity );
+				
+				ClickableTile ct = go.GetComponent<ClickableTile>();
+				ct.tileX = x;
+				ct.tileY = y;
+				ct.map = this;
 			}
 		}
+	}
+
+	public Vector3 TileCoordToWorldCoord(int x, int y) {
+		return new Vector3(x, y, 0);
+	}
+	
+	public void MoveSelectedUnitTo(int x, int y) {
+		selectedUnit.GetComponent<Unit>().tileX = x;
+		selectedUnit.GetComponent<Unit>().tileY = y;
+		selectedUnit.transform.position = TileCoordToWorldCoord(x,y);
 	}
 }
